@@ -2,12 +2,15 @@
 const nextConfig = {
   reactStrictMode: true,
   async rewrites() {
+    const backendUrl = 
+      process.env.NEXT_PUBLIC_API_URL || 
+      (process.env.NODE_ENV === 'production' 
+        ? 'https://chill-code-2.onrender.com' 
+        : 'http://localhost:8080');
     return [
       {
         source: '/api/:path*',
-        destination: process.env.NEXT_PUBLIC_API_URL 
-          ? `${process.env.NEXT_PUBLIC_API_URL}/api/:path*` 
-          : 'http://localhost:8080/api/:path*',
+        destination: `${backendUrl}/api/:path*`,
       },
     ];
   },
