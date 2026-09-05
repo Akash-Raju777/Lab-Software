@@ -18,7 +18,9 @@ export const ErrorState: React.FC<ErrorStateProps> = ({
         <AlertOctagon className="w-6 h-6" />
       </div>
       <h3 className="text-sm sm:text-base font-semibold text-slate-900">{title}</h3>
-      <p className="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed">{message}</p>
+      <p className="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed">
+        {typeof message === 'object' ? JSON.stringify(message) : String(message || 'An unexpected error occurred.')}
+      </p>
       {onRetry && (
         <button
           onClick={onRetry}
