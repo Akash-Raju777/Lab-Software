@@ -11,7 +11,18 @@ import {
   LabSettingsData 
 } from '@/types';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+function getBaseUrl(): string {
+  const envUrl = process.env.NEXT_PUBLIC_API_URL;
+  if (envUrl && !envUrl.includes('localhost') && !envUrl.includes('127.0.0.1')) {
+    return envUrl.replace(/\/+$/, '');
+  }
+
+  if (typeof window !== 'undefined') {
+    return '';
+  }
+
+  return envUrl ? envUrl.replace(/\/+$/, '') : 'http://localhost:8080';
+}
 
 
 class ApiService {
@@ -53,7 +64,7 @@ class ApiService {
 
   // Auth Endpoints
   async login(email: string, password: string): Promise<User> {
-    const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
+    const res = await fetch(`${getBaseUrl()}/api/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
@@ -75,7 +86,7 @@ class ApiService {
     if (params?.sortDir) query.append('sortDir', params.sortDir);
 
     const qs = query.toString();
-    const url = `${API_BASE_URL}/api/reagents${qs ? `?${qs}` : ''}`;
+    const url = `${getBaseUrl()}/api/reagents${qs ? `?${qs}` : ''}`;
 
     const res = await fetch(url, {
       method: 'GET',
@@ -86,7 +97,7 @@ class ApiService {
   }
 
   async getReagentById(id: number): Promise<Reagent> {
-    const res = await fetch(`${API_BASE_URL}/api/reagents/${id}`, {
+    const res = await fetch(`${getBaseUrl()}/api/reagents/${id}`, {
       method: 'GET',
       headers: this.getHeaders(),
     });
@@ -101,7 +112,7 @@ class ApiService {
       expiryDate: data.expiryDate,
     };
 
-    const res = await fetch(`${API_BASE_URL}/api/reagents`, {
+    const res = await fetch(`${getBaseUrl()}/api/reagents`, {
       method: 'POST',
       headers: this.getHeaders(),
       body: JSON.stringify(payload),
@@ -110,7 +121,7 @@ class ApiService {
   }
 
   async deleteReagent(id: number): Promise<void> {
-    const res = await fetch(`${API_BASE_URL}/api/reagents/${id}`, {
+    const res = await fetch(`${getBaseUrl()}/api/reagents/${id}`, {
       method: 'DELETE',
       headers: this.getHeaders(),
     });
@@ -118,7 +129,7 @@ class ApiService {
   }
 
   async getInventorySummary(): Promise<InventorySummary> {
-    const res = await fetch(`${API_BASE_URL}/api/reagents/summary`, {
+    const res = await fetch(`${getBaseUrl()}/api/reagents/summary`, {
       method: 'GET',
       headers: this.getHeaders(),
       cache: 'no-store',
@@ -127,7 +138,7 @@ class ApiService {
   }
 
   async getAlerts(): Promise<AlertItem[]> {
-    const res = await fetch(`${API_BASE_URL}/api/reagents/alerts`, {
+    const res = await fetch(`${getBaseUrl()}/api/reagents/alerts`, {
       method: 'GET',
       headers: this.getHeaders(),
       cache: 'no-store',
@@ -138,7 +149,7 @@ class ApiService {
   // Settings & Profile Endpoints
   async getProfile(identifier?: string): Promise<UserProfile> {
     const qs = identifier ? `?identifier=${encodeURIComponent(identifier)}` : '';
-    const res = await fetch(`${API_BASE_URL}/api/settings/profile${qs}`, {
+    const res = await fetch(`${getBaseUrl()}/api/settings/profile${qs}`, {
       method: 'GET',
       headers: this.getHeaders(),
       cache: 'no-store',
@@ -148,7 +159,7 @@ class ApiService {
 
   async updateProfile(data: UpdateProfileData, identifier?: string): Promise<UserProfile> {
     const qs = identifier ? `?identifier=${encodeURIComponent(identifier)}` : '';
-    const res = await fetch(`${API_BASE_URL}/api/settings/profile${qs}`, {
+    const res = await fetch(`${getBaseUrl()}/api/settings/profile${qs}`, {
       method: 'PUT',
       headers: this.getHeaders(),
       body: JSON.stringify(data),
@@ -158,7 +169,7 @@ class ApiService {
 
   async changePassword(data: ChangePasswordData, identifier?: string): Promise<void> {
     const qs = identifier ? `?identifier=${encodeURIComponent(identifier)}` : '';
-    const res = await fetch(`${API_BASE_URL}/api/settings/password${qs}`, {
+    const res = await fetch(`${getBaseUrl()}/api/settings/password${qs}`, {
       method: 'PUT',
       headers: this.getHeaders(),
       body: JSON.stringify(data),
@@ -168,7 +179,7 @@ class ApiService {
 
   async getPreferences(identifier?: string): Promise<UserProfile> {
     const qs = identifier ? `?identifier=${encodeURIComponent(identifier)}` : '';
-    const res = await fetch(`${API_BASE_URL}/api/settings/preferences${qs}`, {
+    const res = await fetch(`${getBaseUrl()}/api/settings/preferences${qs}`, {
       method: 'GET',
       headers: this.getHeaders(),
       cache: 'no-store',
@@ -178,7 +189,7 @@ class ApiService {
 
   async updatePreferences(data: LabSettingsData, identifier?: string): Promise<UserProfile> {
     const qs = identifier ? `?identifier=${encodeURIComponent(identifier)}` : '';
-    const res = await fetch(`${API_BASE_URL}/api/settings/preferences${qs}`, {
+    const res = await fetch(`${getBaseUrl()}/api/settings/preferences${qs}`, {
       method: 'PUT',
       headers: this.getHeaders(),
       body: JSON.stringify(data),

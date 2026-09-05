@@ -22,16 +22,7 @@ public class CorsConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowCredentials(true);
-        
-        List<String> origins = Arrays.asList(allowedOrigins.split(","));
-        for (String origin : origins) {
-            if (origin.contains("*")) {
-                config.addAllowedOriginPattern(origin.trim());
-            } else {
-                config.addAllowedOrigin(origin.trim());
-            }
-        }
-
+        config.addAllowedOriginPattern("*");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         config.setMaxAge(3600L);
