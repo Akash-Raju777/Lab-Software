@@ -7,9 +7,10 @@ const SUPABASE_URL =
 
 const SUPABASE_KEY = 
   process.env.SUPABASE_SECRET_KEY || 
-  process.env.SUPABASE_PUBLISHABLE_KEY || 
+  process.env.SUPABASE_KEY || 
   process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || 
-  'sb_publishable_IqlCKcUlYL7YRXJj4j4X-A_srJX_bCs';
+  process.env.SUPABASE_PUBLISHABLE_KEY || 
+  '';
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
   auth: {

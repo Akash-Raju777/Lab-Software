@@ -105,11 +105,15 @@ export async function POST(request: Request) {
         quantity: Number(quantity),
         unit: unit.trim(),
         expiry_date: expiryDate,
+        created_at: new Date().toISOString(),
       })
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error('Supabase insert error details:', error);
+      throw new Error(error.message || JSON.stringify(error));
+    }
 
     const { status, daysUntilExpiry } = calculateStatus(data.expiry_date);
 
@@ -128,6 +132,7 @@ export async function POST(request: Request) {
       },
     });
   } catch (err: any) {
+    console.error('Catch error in POST /api/reagents:', err);
     return NextResponse.json(
       { success: false, message: err?.message || 'Failed to create reagent' },
       { status: 500 }
